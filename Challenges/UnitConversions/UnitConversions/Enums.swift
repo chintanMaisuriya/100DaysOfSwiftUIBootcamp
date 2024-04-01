@@ -17,10 +17,10 @@ enum MeasurementType: Int, CaseIterable {
     
     var description: String {
         switch self {
-        case .Temperature: return "Temperature"
-        case .Length: return "Length"
-        case .Time: return "Time"
-        case .Volume: return "Volume"
+        case .Temperature   : return "Temperature"
+        case .Length        : return "Length"
+        case .Time          : return "Time"
+        case .Volume        : return "Volume"
         }
     }
     
