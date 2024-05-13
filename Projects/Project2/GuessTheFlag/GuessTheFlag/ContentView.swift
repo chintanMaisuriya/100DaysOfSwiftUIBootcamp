@@ -18,6 +18,7 @@ struct ContentView: View {
     @State private var scoreTitle = "Total Score"
     @State private var numberOfQuestionAsked: Int = 0
     @State private var score: Int = 0
+    @State private var animationAmount = 0.0
     
     @State private var countries = ["Estonia", "France", "Germany", "Ireland", "Italy", "Nigeria", "Poland", "Russia", "Spain", "UK", "US"].shuffled()
     @State private var correctAnswer = Int.random(in: 0...2)
@@ -117,11 +118,14 @@ struct ContentView: View {
                     
                     ForEach(0..<3) { number in
                         Button {
+                            withAnimation(.spring(response: 2, dampingFraction: 0.4, blendDuration: 0.6)) {
+                                animationAmount += 360
+                            }
                             flagTapped(number)
                         } label: {
                             FlagImage(image: countries[number].lowercased())
                         }
-                        
+                        .rotation3DEffect(.degrees(animationAmount), axis: (x: 0, y: 1, z: 0))
                     }
                 }
                 .padding(.top, 12)
@@ -152,7 +156,7 @@ struct ContentView: View {
             score += 1
             askQuestion()
         } else {
-            errorTitle = "Wrong! That’s the flag of \(countries[number])"
+            errorTitle = "Wrong!\nThat’s the flag of \(countries[number])"
             if score > 0 {
                 score -= 1
             }
