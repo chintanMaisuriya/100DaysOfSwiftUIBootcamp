@@ -7,6 +7,8 @@
 
 import SwiftUI
 
+// MARK: - ExpenseTitle: Using TextField
+/*
 struct AddExpenseView: View {
     @Environment(\.dismiss) private var dismiss
     @FocusState private var field: TextFieldType?
@@ -75,6 +77,105 @@ struct AddExpenseView: View {
                 }
             }
         }
+    }
+    
+    // MARK: -
+    
+    private func add() {
+        dismissKeyboard()
+        
+        guard (!name.isEmpty && amount > 0) else {
+            showErrorAlert = true
+            return
+        }
+        
+        let item = ExpenseItem(name: name, type: type, currencyType: currencyType, amount: amount)
+        expenses.add(item)
+        dismiss()
+    }
+    
+    private func dismissKeyboard() {
+        field = nil
+    }
+}
+*/
+
+
+// MARK: - ExpenseTitle: Using NavigationTitle
+
+struct AddExpenseView: View {
+    @Environment(\.dismiss) private var dismiss
+    @FocusState private var field: TextFieldType?
+
+    @State private var name = "New Expense"
+    @State private var amount = 0.0
+    @State private var type             : ExpenseType = .personal
+    @State private var currencyType     : Currency = .INR
+    @State private var showErrorAlert   : Bool = false
+
+    var expenses: Expenses
+
+    // MARK: -
+    
+    var body: some View {
+        NavigationStack {
+            Form {
+                Picker("Type", selection: $type) {
+                    ForEach(ExpenseType.allCases, id: \.self) {
+                        Text($0.description)
+                    }
+                }
+
+                HStack {
+                    Picker(currencyType.symbol, selection: $currencyType) {
+                        ForEach(Currency.allCases, id: \.self) {
+                            Text($0.symbol)
+                                .fontWeight(.semibold)
+                                .foregroundColor(.black)
+                        }
+                    }
+                    .labelsHidden()
+                    
+                    Spacer()
+                    
+                    TextField("Amount", value: $amount, format: .number.precision(.fractionLength(2)))
+                        .keyboardType(.decimalPad)
+                        .submitLabel(.done)
+                        .focused($field, equals: .amount)
+                    
+                    Text(amount, format: .currency(code: currencyType.rawValue))
+                        .foregroundColor(.gray)
+                }
+                
+            }
+            .navigationTitle($name)
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button("Cancel") {
+                        dismiss()
+                    }
+                }
+                
+                ToolbarItem(placement: .confirmationAction) {
+                    Button("Save") {
+                        add()
+                    }
+                    .alert("⚠️", isPresented: $showErrorAlert) {
+                    } message: {
+                        Text("Please fill all the details of expense")
+                    }
+                }
+                
+                ToolbarItemGroup(placement: .keyboard) {
+                    Spacer()
+                    Button("Done") {
+                        dismissKeyboard()
+                    }
+                }
+            }
+        }
+        .navigationBarBackButtonHidden()
     }
     
     // MARK: -
