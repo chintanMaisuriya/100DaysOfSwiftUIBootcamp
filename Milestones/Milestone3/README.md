@@ -1,1 +1,1 @@
-
+A “HabitTracker” app for folks who want to keep track of how much they do certain things. That might be learning a language, practicing an instrument, exercising, or whatever – they get to decide which activities they add, and track it however they want.
